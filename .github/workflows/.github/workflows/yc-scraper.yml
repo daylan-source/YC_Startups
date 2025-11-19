@@ -1,0 +1,32 @@
+name: YC Companies Scraper
+
+on:
+  schedule:
+    # Runs every day at 12:00 UTC (6–7 AM US Central depending on DST)
+    - cron: "0 12 * * *"
+  workflow_dispatch:  # allows manual runs
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run YC scraper
+        run: python yc_scraper.py
+
+      - name: Upload CSV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yc-companies-master
+          path: yc_companies_master.csv
